@@ -1,4 +1,3 @@
-
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -11,8 +10,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
-// Crear archivo temporal con las credenciales desde variable de entorno
-const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+const credentialsJson = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
+if (!credentialsJson) {
+  throw new Error("❌ GOOGLE_APPLICATION_CREDENTIALS_JSON no está definida en variables de entorno.");
+}
+
+const credentials = JSON.parse(credentialsJson);
 fs.writeFileSync('temp-credentials.json', JSON.stringify(credentials));
 
 const projectId = credentials.project_id;
@@ -40,12 +43,15 @@ app.post('/dialogflow', async (req, res) => {
     const result = responses[0].queryResult;
     res.json({ reply: result.fulfillmentText });
   } catch (error) {
-    console.error(error);
+    console.error("❌ ERROR AL CONSULTAR DIALOGFLOW:");
+    console.error("Mensaje:", error.message);
+    console.error("Código:", error.code);
+    console.error("Detalles:", error.details);
     res.status(500).json({ reply: "Error al contactar Dialogflow" });
   }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor iniciado en http://localhost:${PORT}`);
+  console.log(`🔥 Servidor EDUAGRO iniciado en http://localhost:${PORT}`);
 });
