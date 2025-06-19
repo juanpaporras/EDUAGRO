@@ -2,6 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const { SessionsClient } = require('@google-cloud/dialogflow');
 const uuid = require('uuid');
 
@@ -10,9 +11,13 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
-const projectId = 'TU_PROJECT_ID';
+// Crear archivo temporal con las credenciales desde variable de entorno
+const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+fs.writeFileSync('temp-credentials.json', JSON.stringify(credentials));
+
+const projectId = credentials.project_id;
 const sessionClient = new SessionsClient({
-  keyFilename: 'ruta/a/tu-clave-dialogflow.json',
+  keyFilename: 'temp-credentials.json'
 });
 
 app.post('/dialogflow', async (req, res) => {
@@ -40,7 +45,7 @@ app.post('/dialogflow', async (req, res) => {
   }
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor iniciado en http://localhost:${PORT}`);
 });
