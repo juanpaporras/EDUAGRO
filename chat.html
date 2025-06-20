@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -17,7 +18,6 @@
       font-family: 'Segoe UI', sans-serif;
       padding-top: 80px;
       min-height: 100vh;
-      /* Fondo imagen agricultura con overlay verde */
       background:
         linear-gradient(rgba(34, 85, 34, 0.6), rgba(34, 85, 34, 0.6)),
         url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
@@ -53,7 +53,6 @@
       padding: 16px;
       overflow-y: auto;
       background-color: #f7fff7;
-      border-radius: 0 0 0 0;
     }
 
     .message {
@@ -142,15 +141,6 @@
     </div>
   </section>
 
-  <!-- Scripts de la plantilla -->
-  <script src="js/jquery.min.js"></script>
-  <script src="js/bootstrap.bundle.min.js"></script>
-  <script src="js/owl-carousel.js"></script>
-  <script src="js/animation.js"></script>
-  <script src="js/imagesloaded.js"></script>
-  <script src="js/custom.js"></script>
-
-  <!-- Simulación de conversación -->
   <script>
     function sendMessage() {
       const input = document.getElementById("userInput");
@@ -174,15 +164,16 @@
       })
         .then(res => res.json())
         .then(data => {
-          const botMsg = document.createElement("div");
-          botMsg.className = "message bot";
-          botMsg.innerText = data.reply || 'Lo siento, no entendí eso.';
-          chat.appendChild(botMsg);
-          chat.scrollTop = chat.scrollHeight;
+          if (data.reply && data.reply.trim() !== "") {
+            const botMsg = document.createElement("div");
+            botMsg.className = "message bot";
+            botMsg.innerText = data.reply;
+            chat.appendChild(botMsg);
+            chat.scrollTop = chat.scrollHeight;
+          }
         })
         .catch(err => console.error('Error:', err));
     }
   </script>
 </body>
-
 </html>
