@@ -1,59 +1,70 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Asistente Virtual — EDUAGRO</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Chat EDUAGRO — Centro de Pantalla</title>
   <style>
-    /* Centrar el contenedor y dar un poco de estilo al fondo */
     html, body {
-      margin: 0; padding: 0;
-      height: 100%;
-      font-family: 'Segoe UI', sans-serif;
+      margin:0; padding:0;
+      height:100%; width:100%;
+      display:flex; align-items:center; justify-content:center;
+      font-family:'Segoe UI', sans-serif;
       background:
-        linear-gradient(rgba(34,85,34,0.6), rgba(34,85,34,0.6)),
+        linear-gradient(rgba(34,85,34,0.6),rgba(34,85,34,0.6)),
         url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80')
         no-repeat center center fixed;
-      background-size: cover;
-      display: flex; align-items: center; justify-content: center;
+      background-size:cover;
     }
-    /* Opcional: un wrapper para posicionar o redimensionar el chat */
-    .chat-wrapper {
-      width: 360px;
-      height: 600px;
+
+    /* Oculta el launcher original */
+    df-messenger::part(launcher) {
+      display: none !important;
+    }
+
+    /* Forzar tamaño y posición central del iframe de Kommunicate */
+    .km-widget-frame-container {
+      position: fixed !important;
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%,-50%) !important;
+      width: 360px !important;
+      height: 600px !important;
       border: 3px solid #226622;
       border-radius: 8px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      z-index: 9999;
+    }
+
+    /* Asegura que el contenido llene el contenedor */
+    .km-widget-frame {
+      height: 100% !important;
+      width: 100% !important;
+      border-radius: 5px;
       overflow: hidden;
     }
   </style>
 </head>
 <body>
 
-  <div class="chat-wrapper" id="kommunicate-widget"></div>
+  <!-- Aquí podría ir contenido adicional, pero el chat quedará encima -->
 
-  <!-- ======== Kommunicate Live Chat ======== -->
   <script>
     (function(d, m){
       var kommunicateSettings = {
-        appId: "1b208c5fa5df1bb9c4c90bc3e960bf1a3",   // Tu App ID
-        botIds: ["eduagro-pxtxy"],                   // El ID de tu bot en Kommunicate
-        assignee: "eduagro-pxtxy",                   // El mismo ID de bot o usuario asignado
-        popupWidget: false,                          // false = chat siempre abierto
-        automaticChatOpenOnNavigation: true          // abre el chat al cargar la página
+        appId: "1b208c5fa5df1bb9c4c90bc3e960bf1a3",  // tu App ID
+        botIds: ["eduagro-pxtxy"],                   // tu Bot ID integrado con Dialogflow ES
+        popupWidget: false,                          // chat siempre abierto
+        automaticChatOpenOnNavigation: true          // se abre al cargar
       };
-      var s = document.createElement("script"); 
-      s.type = "text/javascript"; 
-      s.async = true;
+      var s = document.createElement("script");
+      s.type = "text/javascript"; s.async = true;
       s.src = "https://widget.kommunicate.io/v2/kommunicate.app";
       var h = d.getElementsByTagName("head")[0];
       h.appendChild(s);
-      window.kommunicate = m; 
-      m._globals = kommunicateSettings;
+      window.kommunicate = m; m._globals = kommunicateSettings;
     })(document, window.kommunicate || {});
   </script>
-  <!-- ======================================= -->
 
 </body>
 </html>
-
