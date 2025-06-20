@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Asistente Virtual</title>
 
-  <!-- Solo Bootstrap para estilos -->
+  <!-- Bootstrap para estilos generales -->
   <link rel="stylesheet" href="css/bootstrap.min.css"/>
 
   <style>
@@ -38,6 +38,7 @@
       border-radius: 16px 16px 0 0;
       font-size: 1.2rem;
       font-weight: bold;
+      text-align: center;
     }
     .chat-messages {
       flex: 1;
@@ -52,6 +53,7 @@
       border-radius: 20px;
       line-height: 1.4;
       font-weight: 500;
+      word-wrap: break-word;
     }
     .user {
       background: #4caf50;
@@ -109,6 +111,7 @@
       border-radius: 16px;
       cursor: pointer;
       font-size: .9rem;
+      transition: background 0.2s;
     }
     .chip-btn:hover {
       background: #e8f5e9;
@@ -128,9 +131,8 @@
     </div>
   </div>
 
-  <!-- Bootstrap JS (no requiere jQuery) -->
+  <!-- Bootstrap JS -->
   <script src="js/bootstrap.bundle.min.js"></script>
-
   <script>
     async function sendMessage() {
       const inputEl = document.getElementById("userInput");
@@ -143,8 +145,11 @@
       userMsg.className = "message user";
       userMsg.innerText = msg;
       chat.appendChild(userMsg);
+
       inputEl.value = "";
       chat.scrollTop = chat.scrollHeight;
+
+      let displayed = false;
 
       try {
         const res = await fetch('/dialogflow', {
@@ -155,12 +160,13 @@
         const data = await res.json();
         console.log("Respuesta backend:", data);
 
-        // 2) Mostrar texto de la respuesta
-        if (data.reply) {
+        // 2) Mostrar texto de respuesta si existe
+        if (data.reply && data.reply.trim() !== "") {
           const botMsg = document.createElement("div");
           botMsg.className = "message bot";
           botMsg.innerText = data.reply;
           chat.appendChild(botMsg);
+          displayed = true;
         }
 
         // 3) Mostrar chips (opciones) filtrando vacíos
@@ -193,15 +199,30 @@
                 container.appendChild(btn);
               });
               chat.appendChild(container);
+              displayed = true;
             }
           });
+        }
+
+        // 4) Fallback si nada se mostró
+        if (!displayed) {
+          const fallback = document.createElement("div");
+          fallback.className = "message bot";
+          fallback.innerText = "Lo siento, no entendí eso.";
+          chat.appendChild(fallback);
         }
 
         chat.scrollTop = chat.scrollHeight;
       } catch (err) {
         console.error("Error al contactar backend:", err);
+        const errMsg = document.createElement("div");
+        errMsg.className = "message bot";
+        errMsg.innerText = "⚠️ Error de conexión al servidor.";
+        chat.appendChild(errMsg);
+        chat.scrollTop = chat.scrollHeight;
       }
     }
   </script>
 </body>
 </html>
+
