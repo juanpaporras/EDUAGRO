@@ -1,10 +1,36 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0"/>
   <title>Asistente Virtual</title>
+
+  <!-- 1) Bootstrap si lo necesitas para tu layout -->
+  <link rel="stylesheet" href="css/bootstrap.min.css"/>
+
+  <!-- 2) CSS oficial de Dialogflow Messenger -->
+  <link rel="stylesheet"
+        href="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.css"/>
+
   <style>
+    /* 3) Variables CSS para personalizar el chat */
+    df-messenger {
+      --df-messenger-bot-message: #c8e6c9;
+      --df-messenger-user-message: #4caf50;
+      --df-messenger-font-color: #2e7d32;
+      --df-messenger-button-titlebar-color: #226622;
+      --df-messenger-send-icon: #ffffff;
+      --df-messenger-chat-background-color: #f7fff7;
+      --df-messenger-avatar-border-radius: 50%;
+      /* ajusta tamaño fijo o deja que flote */
+      width: 360px;
+      height: 600px;
+      border: 3px solid #226622;
+      border-radius: 8px;
+    }
+
+    /* Opcional: centrar en pantalla */
     body, html {
       margin: 0; padding: 0;
       height: 100%;
@@ -17,24 +43,23 @@
         no-repeat center center fixed;
       background-size: cover;
     }
-    .iframe-wrapper {
-      width: 360px;
-      height: 600px;
-      border: 3px solid #226622;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-    }
   </style>
 </head>
 <body>
-  <div class="iframe-wrapper">
-    <iframe
-      allow="microphone;"
-      width="100%"
-      height="100%"
-      src="https://console.dialogflow.com/api-client/demo/embedded/3c8265c9-d60d-4964-b871-34c62a43bf56">
-    </iframe>
-  </div>
+
+  <!-- 4) El propio componente -->
+  <df-messenger
+    chat-title="Asistente Virtual"
+    agent-id="3c8265c9-d60d-4964-b871-34c62a43bf56"
+    language-code="es">
+  </df-messenger>
+
+  <!-- 5) El script que activa el chat -->
+  <script
+    src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js">
+  </script>
+
+  <!-- 6) (Opcional) tu Bootstrap JS -->
+  <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
