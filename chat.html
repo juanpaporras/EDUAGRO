@@ -2,167 +2,83 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0"/>
   <title>Asistente Virtual</title>
 
+  <!-- 1) CSS oficial de Dialogflow Messenger -->
+  <link
+    rel="stylesheet"
+    href="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.css"
+  />
+
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body, html {
+    /* Full-screen background y centrar el chat */
+    html, body {
+      margin: 0; padding: 0;
       height: 100%;
-      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background:
         linear-gradient(rgba(34,85,34,0.6), rgba(34,85,34,0.6)),
         url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80')
         no-repeat center center fixed;
       background-size: cover;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
-    #chat {
+
+    /* Contenedor fijo en el centro */
+    .chat-wrapper {
       width: 360px;
       height: 600px;
-      background: rgba(255,255,255,0.95);
       border: 3px solid #226622;
-      border-radius: 12px;
+      border-radius: 8px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-      display: flex;
-      flex-direction: column;
       overflow: hidden;
     }
-    #chat header {
-      background: #226622;
-      color: #d4f1c5;
-      padding: 12px;
-      text-align: center;
-      font-size: 1.2rem;
-      font-weight: bold;
+
+    /* Ocultar el launcher flotante */
+    df-messenger::part(launcher) {
+      display: none !important;
     }
-    #messages {
-      flex: 1;
-      padding: 12px;
-      overflow-y: auto;
-      background: #f7fff7;
+
+    /* Forzar que el panel ocupe TODO el contenedor */
+    .chat-wrapper df-messenger {
+      position: static !important;
+      width: 100%  !important;
+      height: 100% !important;
+      transform: none !important;
+      top: auto    !important;
+      right: auto  !important;
+      bottom: auto !important;
+      left: auto   !important;
     }
-    .message {
-      max-width: 75%;
-      margin: 8px 0;
-      padding: 10px 14px;
-      border-radius: 18px;
-      line-height: 1.4;
-      word-wrap: break-word;
-    }
-    .user {
-      margin-left: auto;
-      background: #4caf50;
-      color: #fff;
-      border-bottom-right-radius: 0;
-    }
-    .bot {
-      margin-right: auto;
-      background: #c8e6c9;
-      color: #2e7d32;
-      border-bottom-left-radius: 0;
-    }
-    #input-area {
-      display: flex;
-      border-top: 1px solid #a5d6a7;
-      background: #e8f5e9;
-    }
-    #input-area input {
-      flex: 1;
-      border: none;
-      padding: 12px;
-      font-size: 1rem;
-      background: transparent;
-      color: #2e7d32;
-    }
-    #input-area input::placeholder {
-      color: #81c784;
-    }
-    #input-area button {
-      background: #2e7d32;
-      border: none;
-      color: #fff;
-      padding: 0 20px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    #input-area button:hover {
-      background: #1b4d1b;
+
+    /* Personalización de colores */
+    .chat-wrapper df-messenger {
+      --df-messenger-button-titlebar-color: #226622;
+      --df-messenger-chat-background-color: #f7fff7;
+      --df-messenger-font-color: #2e7d32;
+      --df-messenger-send-icon: #ffffff;
+      --df-messenger-user-message: #4caf50;
+      --df-messenger-bot-message: #c8e6c9;
     }
   </style>
 </head>
 <body>
 
-  <div id="chat">
-    <header>Asistente Virtual</header>
-    <div id="messages">
-      <div class="message bot">Hola, ¿en qué puedo ayudarte hoy?</div>
-    </div>
-    <div id="input-area">
-      <input id="userInput" type="text" placeholder="Escribe tu mensaje..."/>
-      <button onclick="sendMessage()">Enviar</button>
-    </div>
+  <div class="chat-wrapper">
+    <df-messenger
+      chat-title="Asistente Virtual"
+      agent-id="3c8265c9-d60d-4964-b871-34c62a43bf56"
+      language-code="es"
+      chat-open>
+    </df-messenger>
   </div>
 
-  <script>
-    // Usa tu Client Access Token aquí:
-    const ACCESS_TOKEN = '3c8265c9-d60d-4964-b871-34c62a43bf56';
-
-    async function sendMessage() {
-      const input = document.getElementById('userInput');
-      const text = input.value.trim();
-      if (!text) return;
-      const msgs = document.getElementById('messages');
-
-      // Mensaje del usuario
-      const um = document.createElement('div');
-      um.className = 'message user';
-      um.innerText = text;
-      msgs.appendChild(um);
-      msgs.scrollTop = msgs.scrollHeight;
-      input.value = '';
-
-      try {
-        const res = await fetch(
-          'https://api.dialogflow.com/v1/query?v=20150910',
-          {
-            method: 'POST',
-            headers: {
-              'Authorization': 'Bearer ' + ACCESS_TOKEN,
-              'Content-Type': 'application/json; charset=utf-8'
-            },
-            body: JSON.stringify({
-              query: text,
-              lang: 'es',
-              sessionId: Math.random().toString(36).substring(7)
-            })
-          }
-        );
-        const data = await res.json();
-        const reply = data.result?.fulfillment?.speech || 'Lo siento, no entendí eso.';
-
-        // Mensaje del bot
-        const bm = document.createElement('div');
-        bm.className = 'message bot';
-        bm.innerText = reply;
-        msgs.appendChild(bm);
-        msgs.scrollTop = msgs.scrollHeight;
-      } catch (e) {
-        console.error(e);
-        const errm = document.createElement('div');
-        errm.className = 'message bot';
-        errm.innerText = '⚠️ Error de conexión.';
-        msgs.appendChild(errm);
-        msgs.scrollTop = msgs.scrollHeight;
-      }
-    }
-
-    // Enviar con Enter
-    document.getElementById('userInput')
-      .addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
+  <!-- Script que inicializa el componente -->
+  <script
+    src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js">
   </script>
 </body>
 </html>
