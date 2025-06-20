@@ -1,3 +1,4 @@
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -6,7 +7,12 @@ const { SessionsClient } = require('@google-cloud/dialogflow');
 const uuid = require('uuid');
 
 const app = express();
-app.use(cors());
+
+// ✅ Configurar CORS para permitir solicitudes desde Railway
+app.use(cors({
+  origin: 'https://eduagro.up.railway.app'
+}));
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
