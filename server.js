@@ -1,4 +1,3 @@
-
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -8,7 +7,7 @@ const uuid = require('uuid');
 
 const app = express();
 
-// ✅ Configurar CORS para permitir solicitudes desde Railway
+// ✅ CORS para tu dominio en Railway
 app.use(cors({
   origin: 'https://eduagro.up.railway.app'
 }));
@@ -47,7 +46,18 @@ app.post('/dialogflow', async (req, res) => {
   try {
     const responses = await sessionClient.detectIntent(request);
     const result = responses[0].queryResult;
-    res.json({ reply: result.fulfillmentText });
+
+    // ✅ Extrae texto desde fulfillmentText o fallback desde fulfillmentMessages
+    const reply =
+      result.fulfillmentText ||
+      (result.fulfillmentMessages &&
+        result.fulfillmentMessages[0] &&
+        result.fulfillmentMessages[0].text &&
+        result.fulfillmentMessages[0].text.text[0]) ||
+      "";
+
+    console.log("🟢 Respuesta detectada:", reply);
+    res.json({ reply });
   } catch (error) {
     console.error("❌ ERROR AL CONSULTAR DIALOGFLOW:");
     console.error("Mensaje:", error.message);
