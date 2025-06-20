@@ -157,7 +157,7 @@
       input.value = "";
       chat.scrollTop = chat.scrollHeight;
 
-      fetch('/dialogflow', {
+      fetch('https://eduagro.up.railway.app/dialogflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: msg })
