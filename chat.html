@@ -138,37 +138,41 @@
   <script src="js/custom.js"></script>
 
   <!-- Simulación de conversación -->
-  <script>
-    function sendMessage() {
-      const input = document.getElementById("userInput");
-      const msg = input.value.trim();
-      if (!msg) return;
+<script>
+  function sendMessage() {
+    const input = document.getElementById("userInput");
+    const msg = input.value.trim();
+    if (!msg) return;
 
-      const chat = document.getElementById("chatMessages");
+    const chat = document.getElementById("chatMessages");
 
-      const userMsg = document.createElement("div");
-      userMsg.className = "message user";
-      userMsg.innerText = msg;
-      chat.appendChild(userMsg);
+    const userMsg = document.createElement("div");
+    userMsg.className = "message user";
+    userMsg.innerText = msg;
+    chat.appendChild(userMsg);
 
-      input.value = "";
-      chat.scrollTop = chat.scrollHeight;
+    input.value = "";
+    chat.scrollTop = chat.scrollHeight;
 
-      fetch('/dialogflow', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg })
-      })
-        .then(res => res.json())
-        .then(data => {
-          const botMsg = document.createElement("div");
-          botMsg.className = "message bot";
-          botMsg.innerText = data.reply || 'Lo siento, no entendí eso.';
-          chat.appendChild(botMsg);
-          chat.scrollTop = chat.scrollHeight;
-        })
-        .catch(err => console.error('Error:', err));
-    }
+    fetch('/dialogflow', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: msg })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.reply && data.reply.trim() !== "") {
+        const botMsg = document.createElement("div");
+        botMsg.className = "message bot";
+        botMsg.innerText = data.reply;
+        chat.appendChild(botMsg);
+        chat.scrollTop = chat.scrollHeight;
+      }
+    })
+    .catch(err => {
+      console.error('Error al enviar al backend:', err);
+    });
+  }
 </script>
 </body>
 </html>
