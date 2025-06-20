@@ -2,58 +2,30 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Asistente Virtual</title>
 
-  <!-- Bootstrap para estilos generales -->
-  <link rel="stylesheet" href="css/bootstrap.min.css" />
-
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      padding-top: 80px;
-      min-height: 100vh;
-      background:
-        linear-gradient(rgba(34, 85, 34, 0.6), rgba(34, 85, 34, 0.6)),
-        url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
-      background-size: cover;
-      color: #e0f2e9;
-    }
-    .container {
-      max-width: 400px;
-      margin: 0 auto;
-    }
-    h1 {
-      color: #fff;
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-    .iframe-container {
-      width: 100%;
-      height: 500px;
-      border: 2px solid #226622;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-    }
-  </style>
+  <!-- 1) Este CSS es obligatorio -->
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.css"
+  />
 </head>
 <body>
-  <div class="container">
-    <h1>Asistente Virtual</h1>
-    <div class="iframe-container">
-      <iframe
-        allow="microphone;"
-        width="100%"
-        height="100%"
-        src="https://console.dialogflow.com/api-client/demo/embedded/b86869f5-3a82-4139-aceb-3d098ffed227">
-      </iframe>
-    </div>
-  </div>
+  
+  <!-- 2) Este es tu widget de Dialogflow Messenger -->
+  <df-messenger
+    chat-title="PruebaHTML"
+    agent-id="b86869f5-3a82-4139-aceb-3d098ffed227"
+    language-code="es"
+  ></df-messenger>
 
-  <!-- Bootstrap JS -->
-  <script src="js/bootstrap.bundle.min.js"></script>
+  <!-- 3) Este script carga el componente web de Dialogflow -->
+  <script
+    src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js"
+  ></script>
 </body>
 </html>
+
 
