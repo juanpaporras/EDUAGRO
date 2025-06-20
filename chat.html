@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8"/>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Asistente Virtual</title>
-
-  <!-- Opcional: estilos para centrar un contenedor de contenido -->
+  <title>Asistente Virtual — EDUAGRO</title>
   <style>
-    body, html {
+    /* Centrar el contenedor y dar un poco de estilo al fondo */
+    html, body {
       margin: 0; padding: 0;
       height: 100%;
       font-family: 'Segoe UI', sans-serif;
@@ -18,41 +17,43 @@
       background-size: cover;
       display: flex; align-items: center; justify-content: center;
     }
-
-    /* Si quisieras meter tu propio contenido sobre el chat, podrías usar este wrapper */
-    .content-wrapper {
-      position: absolute;
-      top: 20px; left: 20px;
-      right: 20px; bottom: 20px;
-      pointer-events: none; /* deja pasar clics al widget */
+    /* Opcional: un wrapper para posicionar o redimensionar el chat */
+    .chat-wrapper {
+      width: 360px;
+      height: 600px;
+      border: 3px solid #226622;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      overflow: hidden;
     }
   </style>
 </head>
 <body>
 
-  <div class="content-wrapper">
-    <!-- Aquí podrías poner tu logo, texto, etc. -->
-  </div>
+  <div class="chat-wrapper" id="kommunicate-widget"></div>
 
-  <!-- ========================= -->
-  <!-- Integración de Kommunicate -->
-  <!-- ========================= -->
+  <!-- ======== Kommunicate Live Chat ======== -->
   <script>
     (function(d, m){
       var kommunicateSettings = {
-        "appId": "1b208c5fa5df1bb9c4c90bc3e960bf1a3",
-        "popupWidget": false,                 // chat siempre abierto
-        "automaticChatOpenOnNavigation": true // se abre al cargar
+        appId: "1b208c5fa5df1bb9c4c90bc3e960bf1a3",   // Tu App ID
+        botIds: ["eduagro-pxtxy"],                   // El ID de tu bot en Kommunicate
+        assignee: "eduagro-pxtxy",                   // El mismo ID de bot o usuario asignado
+        popupWidget: false,                          // false = chat siempre abierto
+        automaticChatOpenOnNavigation: true          // abre el chat al cargar la página
       };
-      var s = document.createElement("script");
-      s.type = "text/javascript"; s.async = true;
+      var s = document.createElement("script"); 
+      s.type = "text/javascript"; 
+      s.async = true;
       s.src = "https://widget.kommunicate.io/v2/kommunicate.app";
       var h = d.getElementsByTagName("head")[0];
       h.appendChild(s);
-      window.kommunicate = m; m._globals = kommunicateSettings;
+      window.kommunicate = m; 
+      m._globals = kommunicateSettings;
     })(document, window.kommunicate || {});
   </script>
-  <!-- ========================= -->
+  <!-- ======================================= -->
 
 </body>
 </html>
+
