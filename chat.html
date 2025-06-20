@@ -2,67 +2,97 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Chat EDUAGRO — Centro de Pantalla</title>
   <style>
     html, body {
-      margin:0; padding:0;
-      height:100%; width:100%;
-      display:flex; align-items:center; justify-content:center;
-      font-family:'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      font-family: 'Segoe UI', sans-serif;
       background:
-        linear-gradient(rgba(34,85,34,0.6),rgba(34,85,34,0.6)),
+        linear-gradient(rgba(34, 85, 34, 0.6), rgba(34, 85, 34, 0.6)),
         url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80')
         no-repeat center center fixed;
-      background-size:cover;
+      background-size: cover;
+      overflow: hidden;
     }
 
-    /* Oculta el launcher original */
-    df-messenger::part(launcher) {
+    /* Oculta completamente el launcher/botón de Kommunicate */
+    .km-launcher {
       display: none !important;
     }
 
-    /* Forzar tamaño y posición central del iframe de Kommunicate */
+    /* Estilos para el contenedor del chat centrado */
     .km-widget-frame-container {
       position: fixed !important;
       top: 50% !important;
       left: 50% !important;
-      transform: translate(-50%,-50%) !important;
+      transform: translate(-50%, -50%) !important;
       width: 360px !important;
       height: 600px !important;
       border: 3px solid #226622;
-      border-radius: 8px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       z-index: 9999;
+      overflow: hidden;
+      transition: all 0.3s ease;
     }
 
-    /* Asegura que el contenido llene el contenedor */
+    /* Asegura que el iframe ocupe todo el espacio */
     .km-widget-frame {
-      height: 100% !important;
       width: 100% !important;
-      border-radius: 5px;
-      overflow: hidden;
+      height: 100% !important;
+      border: none !important;
+      border-radius: 0 !important;
+    }
+
+    /* Efecto al pasar el mouse (opcional) */
+    .km-widget-frame-container:hover {
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Responsive para móviles */
+    @media (max-width: 480px) {
+      .km-widget-frame-container {
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 0 !important;
+        border: none !important;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Aquí podría ir contenido adicional, pero el chat quedará encima -->
+  <!-- Contenedor del chat se inyectará automáticamente aquí -->
 
   <script>
-    (function(d, m){
+    (function(d, m) {
       var kommunicateSettings = {
-        appId: "1b208c5fa5df1bb9c4c90bc3e960bf1a3",  // tu App ID
-        botIds: ["eduagro-pxtxy"],                   // tu Bot ID integrado con Dialogflow ES
-        popupWidget: false,                          // chat siempre abierto
-        automaticChatOpenOnNavigation: true          // se abre al cargar
+        appId: "1b208c5fa5df1bb9c4c90bc3e960bf1a3",  // Tu App ID de Kommunicate
+        botIds: ["eduagro-pxtxy"],                   // Tu Bot ID de Dialogflow
+        popupWidget: false,                          // Chat siempre visible
+        automaticChatOpenOnNavigation: true,         // Abrir automáticamente
+        widgetAlignment: "center",                  // Alineación central
+        onInit: function() {
+          console.log("Chat EDUAGRO inicializado");
+          // Forzar apertura del chat si no se abre automáticamente
+          if(typeof kommunicate !== "undefined") {
+            kommunicate.launchConversation();
+          }
+        }
       };
+      
       var s = document.createElement("script");
-      s.type = "text/javascript"; s.async = true;
+      s.type = "text/javascript";
+      s.async = true;
       s.src = "https://widget.kommunicate.io/v2/kommunicate.app";
       var h = d.getElementsByTagName("head")[0];
       h.appendChild(s);
-      window.kommunicate = m; m._globals = kommunicateSettings;
+      window.kommunicate = m;
+      m._globals = kommunicateSettings;
     })(document, window.kommunicate || {});
   </script>
 
