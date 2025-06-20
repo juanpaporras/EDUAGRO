@@ -2,83 +2,57 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Asistente Virtual</title>
 
-  <!-- 1) CSS oficial de Dialogflow Messenger -->
-  <link
-    rel="stylesheet"
-    href="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.css"
-  />
-
+  <!-- Opcional: estilos para centrar un contenedor de contenido -->
   <style>
-    /* Full-screen background y centrar el chat */
-    html, body {
+    body, html {
       margin: 0; padding: 0;
       height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      font-family: 'Segoe UI', sans-serif;
       background:
         linear-gradient(rgba(34,85,34,0.6), rgba(34,85,34,0.6)),
         url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80')
         no-repeat center center fixed;
       background-size: cover;
+      display: flex; align-items: center; justify-content: center;
     }
 
-    /* Contenedor fijo en el centro */
-    .chat-wrapper {
-      width: 360px;
-      height: 600px;
-      border: 3px solid #226622;
-      border-radius: 8px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-      overflow: hidden;
-    }
-
-    /* Ocultar el launcher flotante */
-    df-messenger::part(launcher) {
-      display: none !important;
-    }
-
-    /* Forzar que el panel ocupe TODO el contenedor */
-    .chat-wrapper df-messenger {
-      position: static !important;
-      width: 100%  !important;
-      height: 100% !important;
-      transform: none !important;
-      top: auto    !important;
-      right: auto  !important;
-      bottom: auto !important;
-      left: auto   !important;
-    }
-
-    /* Personalización de colores */
-    .chat-wrapper df-messenger {
-      --df-messenger-button-titlebar-color: #226622;
-      --df-messenger-chat-background-color: #f7fff7;
-      --df-messenger-font-color: #2e7d32;
-      --df-messenger-send-icon: #ffffff;
-      --df-messenger-user-message: #4caf50;
-      --df-messenger-bot-message: #c8e6c9;
+    /* Si quisieras meter tu propio contenido sobre el chat, podrías usar este wrapper */
+    .content-wrapper {
+      position: absolute;
+      top: 20px; left: 20px;
+      right: 20px; bottom: 20px;
+      pointer-events: none; /* deja pasar clics al widget */
     }
   </style>
 </head>
 <body>
 
-  <div class="chat-wrapper">
-    <df-messenger
-      chat-title="Asistente Virtual"
-      agent-id="3c8265c9-d60d-4964-b871-34c62a43bf56"
-      language-code="es"
-      chat-open>
-    </df-messenger>
+  <div class="content-wrapper">
+    <!-- Aquí podrías poner tu logo, texto, etc. -->
   </div>
 
-  <!-- Script que inicializa el componente -->
-  <script
-    src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js">
+  <!-- ========================= -->
+  <!-- Integración de Kommunicate -->
+  <!-- ========================= -->
+  <script>
+    (function(d, m){
+      var kommunicateSettings = {
+        "appId": "1b208c5fa5df1bb9c4c90bc3e960bf1a3",
+        "popupWidget": false,                 // chat siempre abierto
+        "automaticChatOpenOnNavigation": true // se abre al cargar
+      };
+      var s = document.createElement("script");
+      s.type = "text/javascript"; s.async = true;
+      s.src = "https://widget.kommunicate.io/v2/kommunicate.app";
+      var h = d.getElementsByTagName("head")[0];
+      h.appendChild(s);
+      window.kommunicate = m; m._globals = kommunicateSettings;
+    })(document, window.kommunicate || {});
   </script>
+  <!-- ========================= -->
+
 </body>
 </html>
