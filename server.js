@@ -47,6 +47,9 @@ app.post('/dialogflow', async (req, res) => {
     const responses = await sessionClient.detectIntent(request);
     const result = responses[0].queryResult;
 
+    // 🟢 Log detallado del resultado completo
+    console.log("🔍 QueryResult completo:", JSON.stringify(result, null, 2));
+
     // ✅ Extrae texto desde fulfillmentText o fallback desde fulfillmentMessages
     const reply =
       result.fulfillmentText ||
@@ -71,3 +74,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🔥 Servidor EDUAGRO iniciado en http://localhost:${PORT}`);
 });
+
