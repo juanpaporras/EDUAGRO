@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Asistente Virtual</title>
+
+  <!-- Solo Bootstrap para estilos -->
   <link rel="stylesheet" href="css/bootstrap.min.css"/>
 
   <style>
@@ -14,7 +16,7 @@
       min-height: 100vh;
       background:
         linear-gradient(rgba(34,85,34,0.6), rgba(34,85,34,0.6)),
-        url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80') 
+        url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80')
         no-repeat center center fixed;
       background-size: cover;
       color: #e0f2e9;
@@ -93,19 +95,24 @@
     .chat-input button:hover {
       background: #1b4d1b;
     }
-    /* botones de sugerencia */
-    .chip-container { margin: 8px 0; }
+    .chip-container {
+      margin: 8px 0;
+      display: flex;
+      flex-wrap: wrap;
+    }
     .chip-btn {
       background: #fff;
       border: 1px solid #2e7d32;
       color: #2e7d32;
       padding: 6px 12px;
-      margin-right: 6px;
+      margin: 4px;
       border-radius: 16px;
       cursor: pointer;
       font-size: .9rem;
     }
-    .chip-btn:hover { background: #e8f5e9; }
+    .chip-btn:hover {
+      background: #e8f5e9;
+    }
   </style>
 </head>
 <body>
@@ -116,10 +123,13 @@
       <div class="message bot">Hola, ¿en qué puedo ayudarte hoy?</div>
     </div>
     <div class="chat-input">
-      <input type="text" id="userInput" placeholder="Escribe tu mensaje..." />
+      <input type="text" id="userInput" placeholder="Escribe tu mensaje..."/>
       <button onclick="sendMessage()">Enviar</button>
     </div>
   </div>
+
+  <!-- Bootstrap JS (no requiere jQuery) -->
+  <script src="js/bootstrap.bundle.min.js"></script>
 
   <script>
     async function sendMessage() {
@@ -128,7 +138,7 @@
       if (!msg) return;
 
       const chat = document.getElementById("chatMessages");
-      // 1) Mensaje usuario
+      // 1) Mostrar mensaje del usuario
       const userMsg = document.createElement("div");
       userMsg.className = "message user";
       userMsg.innerText = msg;
@@ -145,7 +155,7 @@
         const data = await res.json();
         console.log("Respuesta backend:", data);
 
-        // 2) Texto plano
+        // 2) Mostrar texto de la respuesta
         if (data.reply) {
           const botMsg = document.createElement("div");
           botMsg.className = "message bot";
@@ -153,31 +163,37 @@
           chat.appendChild(botMsg);
         }
 
-        // 3) Sugerencias (chips) si llegan en payload
+        // 3) Mostrar chips (opciones) filtrando vacíos
         const payload = data.payload?.fields?.richContent;
         if (payload) {
-          // payload es un listValue de filas
           payload.listValue.values.forEach(row => {
-            // cada row es otro listValue de items
-            const container = document.createElement("div");
-            container.className = "chip-container";
-            row.listValue.values.forEach(item => {
-              const f = item.structValue.fields;
-              if (f.type.stringValue === 'chips' && f.options) {
-                f.options.listValue.values.forEach(o => {
-                  const text = o.structValue.fields.text.stringValue;
-                  const btn = document.createElement("button");
-                  btn.className = "chip-btn";
-                  btn.innerText = text;
-                  btn.onclick = () => {
-                    document.getElementById("userInput").value = text;
-                    sendMessage();
-                  };
-                  container.appendChild(btn);
-                });
-              }
-            });
-            chat.appendChild(container);
+            const options = row.listValue.values
+              .map(item => {
+                const f = item.structValue.fields;
+                if (f.type.stringValue === 'chips' && f.options) {
+                  return f.options.listValue.values
+                    .map(o => o.structValue.fields.text.stringValue);
+                }
+                return [];
+              })
+              .flat()
+              .filter(text => text && text.trim() !== "");
+
+            if (options.length) {
+              const container = document.createElement("div");
+              container.className = "chip-container";
+              options.forEach(text => {
+                const btn = document.createElement("button");
+                btn.className = "chip-btn";
+                btn.innerText = text;
+                btn.onclick = () => {
+                  inputEl.value = text;
+                  sendMessage();
+                };
+                container.appendChild(btn);
+              });
+              chat.appendChild(container);
+            }
           });
         }
 
@@ -187,6 +203,5 @@
       }
     }
   </script>
-
 </body>
 </html>
