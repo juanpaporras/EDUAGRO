@@ -12,35 +12,7 @@
   />
 
   <style>
-    /* 2) Oculta el launcher (el botón que aparece abajo) */
-    df-messenger::part(launcher) {
-      display: none !important;
-    }
-
-    /* 3) Fuerza el chat siempre abierto y visible */
-    df-messenger::part(chat-wrapper) {
-      visibility: visible !important;
-      opacity: 1 !important;
-      transform: none !important;
-    }
-
-    /* 4) Ajusta tamaño y bordes a tu gusto */
-    df-messenger {
-      --df-messenger-bot-message: #c8e6c9;
-      --df-messenger-user-message: #4caf50;
-      --df-messenger-font-color: #2e7d32;
-      --df-messenger-button-titlebar-color: #226622;
-      --df-messenger-send-icon: #ffffff;
-      --df-messenger-chat-background-color: #f7fff7;
-
-      width: 360px;    /* ancho fijo */
-      height: 600px;   /* alto fijo */
-      border: 3px solid #226622;
-      border-radius: 8px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-    }
-
-    /* centra en pantalla */
+    /* Body centrado con fondo */
     html, body {
       margin: 0; padding: 0;
       height: 100%;
@@ -53,19 +25,58 @@
         no-repeat center center fixed;
       background-size: cover;
     }
+
+    /* El “cuadro verde” centrado */
+    .iframe-wrapper {
+      position: relative;
+      width: 360px;
+      height: 600px;
+      border: 2px solid #226622;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+
+    /* 2) Ocultamos el launcher flotante */
+    df-messenger::part(launcher) {
+      display: none !important;
+    }
+
+    /* 3) Forzamos el chat abierto y ocupando TODO el contenedor */
+    .iframe-wrapper df-messenger {
+      position: static !important;
+      width: 100% !important;
+      height: 100% !important;
+      /* override de posición fija que trae por defecto */
+      top: auto !important;
+      right: auto !important;
+      bottom: auto !important;
+      left: auto !important;
+      transform: none !important;
+    }
+
+    /* 4) Opcional: personaliza colores */
+    .iframe-wrapper df-messenger {
+      --df-messenger-bot-message: #c8e6c9;
+      --df-messenger-user-message: #4caf50;
+      --df-messenger-font-color: #2e7d32;
+      --df-messenger-button-titlebar-color: #226622;
+      --df-messenger-send-icon: #ffffff;
+      --df-messenger-chat-background-color: #f7fff7;
+    }
   </style>
 </head>
 <body>
+  <div class="iframe-wrapper">
+    <df-messenger
+      chat-title="Asistente Virtual"
+      agent-id="3c8265c9-d60d-4964-b871-34c62a43bf56"
+      language-code="es"
+      chat-open>
+    </df-messenger>
+  </div>
 
-  <!-- 5) Chat desplegado siempre, con tu Agent ID -->
-  <df-messenger
-    chat-title="Asistente Virtual"
-    agent-id="3c8265c9-d60d-4964-b871-34c62a43bf56"
-    language-code="es"
-    chat-open
-  ></df-messenger>
-
-  <!-- 6) Script que activa el componente -->
+  <!-- 5) Script que inicializa el componente -->
   <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js"></script>
 </body>
 </html>
