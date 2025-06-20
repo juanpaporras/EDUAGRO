@@ -5,13 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Asistente Virtual</title>
 
-  <!-- CSS oficial de Dialogflow Messenger -->
+  <!-- 1) CSS oficial de Dialogflow Messenger -->
   <link
     rel="stylesheet"
-    href="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.css"/>
+    href="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.css"
+  />
 
   <style>
-    /* Centrar en pantalla */
+    /* 2) Oculta el launcher (el botón que aparece abajo) */
+    df-messenger::part(launcher) {
+      display: none !important;
+    }
+
+    /* 3) Fuerza el chat siempre abierto y visible */
+    df-messenger::part(chat-wrapper) {
+      visibility: visible !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    /* 4) Ajusta tamaño y bordes a tu gusto */
+    df-messenger {
+      --df-messenger-bot-message: #c8e6c9;
+      --df-messenger-user-message: #4caf50;
+      --df-messenger-font-color: #2e7d32;
+      --df-messenger-button-titlebar-color: #226622;
+      --df-messenger-send-icon: #ffffff;
+      --df-messenger-chat-background-color: #f7fff7;
+
+      width: 360px;    /* ancho fijo */
+      height: 600px;   /* alto fijo */
+      border: 3px solid #226622;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+
+    /* centra en pantalla */
     html, body {
       margin: 0; padding: 0;
       height: 100%;
@@ -24,34 +53,19 @@
         no-repeat center center fixed;
       background-size: cover;
     }
-
-    /* Wrapper para el chat */
-    .iframe-wrapper {
-      width: 360px;
-      height: 600px;
-      border: 3px solid #226622;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-    }
-
-    /* Opcional: ocultar el launcher redundante */
-    df-messenger::part(launcher) {
-      display: none !important;
-    }
   </style>
 </head>
 <body>
-  <div class="iframe-wrapper">
-    <df-messenger
-      chat-title="Asistente Virtual"
-      agent-id="3c8265c9-d60d-4964-b871-34c62a43bf56"
-      language-code="es"
-      chat-open
-    ></df-messenger>
-  </div>
 
-  <!-- Script que inicializa el componente -->
+  <!-- 5) Chat desplegado siempre, con tu Agent ID -->
+  <df-messenger
+    chat-title="Asistente Virtual"
+    agent-id="3c8265c9-d60d-4964-b871-34c62a43bf56"
+    language-code="es"
+    chat-open
+  ></df-messenger>
+
+  <!-- 6) Script que activa el componente -->
   <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js"></script>
 </body>
 </html>
