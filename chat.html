@@ -2,99 +2,73 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Chat EDUAGRO — Centro de Pantalla</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Chat EDUAGRO — Nueva Conversación al Cargar</title>
   <style>
+    /* — Fondo full-screen — */
     html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      width: 100%;
-      font-family: 'Segoe UI', sans-serif;
+      margin:0; padding:0;
+      width:100%; height:100%;
+      font-family:'Segoe UI',sans-serif;
       background:
-        linear-gradient(rgba(34, 85, 34, 0.6), rgba(34, 85, 34, 0.6)),
+        linear-gradient(rgba(34,85,34,0.6),rgba(34,85,34,0.6)),
         url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80')
         no-repeat center center fixed;
-      background-size: cover;
-      overflow: hidden;
+      background-size:cover;
+      overflow:hidden;
     }
 
-    /* Oculta completamente el launcher/botón de Kommunicate */
-    .km-launcher {
-      display: none !important;
-    }
-
-    /* Estilos para el contenedor del chat centrado */
+    /* — Contenedor 360×600px, centrado — */
     .km-widget-frame-container {
       position: fixed !important;
-      top: 50% !important;
-      left: 50% !important;
+      top:50% !important; left:50% !important;
       transform: translate(-50%, -50%) !important;
-      width: 360px !important;
-      height: 600px !important;
-      border: 3px solid #226622;
-      border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      z-index: 9999;
-      overflow: hidden;
-      transition: all 0.3s ease;
+      width:360px !important; height:600px !important;
+      border:3px solid #226622 !important;
+      border-radius:12px !important;
+      box-shadow:0 8px 32px rgba(0,0,0,0.3) !important;
+      z-index:9999 !important;
+      overflow:hidden !important;
     }
-
-    /* Asegura que el iframe ocupe todo el espacio */
     .km-widget-frame {
-      width: 100% !important;
-      height: 100% !important;
-      border: none !important;
-      border-radius: 0 !important;
+      width:100% !important; height:100% !important;
+      border:none !important; border-radius:0 !important;
     }
 
-    /* Efecto al pasar el mouse (opcional) */
-    .km-widget-frame-container:hover {
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-    }
-
-    /* Responsive para móviles */
-    @media (max-width: 480px) {
-      .km-widget-frame-container {
-        width: 100% !important;
-        height: 100% !important;
-        border-radius: 0 !important;
-        border: none !important;
-      }
-    }
+    /* — Ocultar launcher flotante — */
+    .km-launcher { display:none !important; }
   </style>
 </head>
 <body>
 
-  <!-- Contenedor del chat se inyectará automáticamente aquí -->
-
   <script>
     (function(d, m) {
+      // 1) Definimos settings ANTES de cargar el script
       var kommunicateSettings = {
-        appId: "1b208c5fa5df1bb9c4c90bc3e960bf1a3",  // Tu App ID de Kommunicate
-        botIds: ["eduagro-pxtxy"],                   // Tu Bot ID de Dialogflow
-        popupWidget: false,                          // Chat siempre visible
-        automaticChatOpenOnNavigation: true,         // Abrir automáticamente
-        widgetAlignment: "center",                  // Alineación central
+        appId: "1b208c5fa5df1bb9c4c90bc3e960bf1a3", // ← tu App ID
+        botIds: ["eduagro-pxtxy"],                // ← tu Bot ID
+        popupWidget: false,                       // elimina el botón flotante
+        automaticChatOpenOnNavigation: true,      // abre al cargar
+        widgetAlignment: "center",
+        conversationId: null,                     // fuerza conversación nueva
         onInit: function() {
-          console.log("Chat EDUAGRO inicializado");
-          // Forzar apertura del chat si no se abre automáticamente
-          if(typeof kommunicate !== "undefined") {
-            kommunicate.launchConversation();
+          // 2) Cada vez que arranca, lanzamos de nuevo la conversación limpia
+          if (window.Kommunicate && Kommunicate.launchConversation) {
+            Kommunicate.launchConversation();
           }
         }
       };
-      
-      var s = document.createElement("script");
-      s.type = "text/javascript";
-      s.async = true;
-      s.src = "https://widget.kommunicate.io/v2/kommunicate.app";
-      var h = d.getElementsByTagName("head")[0];
-      h.appendChild(s);
+
+      // 3) Inyectamos globals y el script
       window.kommunicate = m;
       m._globals = kommunicateSettings;
+      var s = document.createElement("script");
+      s.type = "text/javascript"; s.async = true;
+      s.src = "https://widget.kommunicate.io/v2/kommunicate.app";
+      d.head.appendChild(s);
     })(document, window.kommunicate || {});
   </script>
 
 </body>
 </html>
+
