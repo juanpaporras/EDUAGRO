@@ -1,228 +1,40 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8"/>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Asistente Virtual</title>
-
-  <!-- Bootstrap para estilos generales -->
-  <link rel="stylesheet" href="css/bootstrap.min.css"/>
-
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      padding: 80px 0 0;
-      min-height: 100vh;
+    body, html {
+      margin: 0; padding: 0;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background:
         linear-gradient(rgba(34,85,34,0.6), rgba(34,85,34,0.6)),
         url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80')
         no-repeat center center fixed;
       background-size: cover;
-      color: #e0f2e9;
     }
-    .chat-container {
-      max-width: 600px;
-      margin: 0 auto;
-      background: rgba(255,255,255,0.9);
-      border-radius: 16px;
+    .iframe-wrapper {
+      width: 360px;
+      height: 600px;
+      border: 3px solid #226622;
+      border-radius: 8px;
+      overflow: hidden;
       box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-      display: flex;
-      flex-direction: column;
-      height: 80vh;
-    }
-    .chat-header {
-      background: #226622;
-      color: #d4f1c5;
-      padding: 16px;
-      border-radius: 16px 16px 0 0;
-      font-size: 1.2rem;
-      font-weight: bold;
-      text-align: center;
-    }
-    .chat-messages {
-      flex: 1;
-      padding: 16px;
-      overflow-y: auto;
-      background: #f7fff7;
-    }
-    .message {
-      max-width: 75%;
-      padding: 12px 16px;
-      margin-bottom: 12px;
-      border-radius: 20px;
-      line-height: 1.4;
-      font-weight: 500;
-      word-wrap: break-word;
-    }
-    .user {
-      background: #4caf50;
-      color: white;
-      align-self: flex-end;
-      border-bottom-right-radius: 0;
-    }
-    .bot {
-      background: #c8e6c9;
-      color: #2e7d32;
-      align-self: flex-start;
-      border-bottom-left-radius: 0;
-    }
-    .chat-input {
-      display: flex;
-      border-top: 1px solid #a5d6a7;
-      background: #e8f5e9;
-      border-radius: 0 0 16px 16px;
-    }
-    .chat-input input {
-      flex: 1;
-      border: none;
-      padding: 12px 16px;
-      font-size: 1rem;
-      background: transparent;
-      color: #2e7d32;
-    }
-    .chat-input input::placeholder {
-      color: #81c784;
-    }
-    .chat-input button {
-      background: #2e7d32;
-      border: none;
-      color: white;
-      padding: 12px 24px;
-      font-size: 1rem;
-      cursor: pointer;
-      border-radius: 0 0 0 16px;
-      transition: background 0.3s;
-    }
-    .chat-input button:hover {
-      background: #1b4d1b;
-    }
-    .chip-container {
-      margin: 8px 0;
-      display: flex;
-      flex-wrap: wrap;
-    }
-    .chip-btn {
-      background: #fff;
-      border: 1px solid #2e7d32;
-      color: #2e7d32;
-      padding: 6px 12px;
-      margin: 4px;
-      border-radius: 16px;
-      cursor: pointer;
-      font-size: .9rem;
-      transition: background 0.2s;
-    }
-    .chip-btn:hover {
-      background: #e8f5e9;
     }
   </style>
 </head>
 <body>
-
-  <div class="chat-container">
-    <div class="chat-header">Asistente Virtual</div>
-    <div class="chat-messages" id="chatMessages">
-      <div class="message bot">Hola, ¿en qué puedo ayudarte hoy?</div>
-    </div>
-    <div class="chat-input">
-      <input type="text" id="userInput" placeholder="Escribe tu mensaje..."/>
-      <button onclick="sendMessage()">Enviar</button>
-    </div>
+  <div class="iframe-wrapper">
+    <iframe
+      allow="microphone;"
+      width="100%"
+      height="100%"
+      src="https://console.dialogflow.com/api-client/demo/embedded/3c8265c9-d60d-4964-b871-34c62a43bf56">
+    </iframe>
   </div>
-
-  <!-- Bootstrap JS -->
-  <script src="js/bootstrap.bundle.min.js"></script>
-  <script>
-    async function sendMessage() {
-      const inputEl = document.getElementById("userInput");
-      const msg = inputEl.value.trim();
-      if (!msg) return;
-
-      const chat = document.getElementById("chatMessages");
-      // 1) Mostrar mensaje del usuario
-      const userMsg = document.createElement("div");
-      userMsg.className = "message user";
-      userMsg.innerText = msg;
-      chat.appendChild(userMsg);
-
-      inputEl.value = "";
-      chat.scrollTop = chat.scrollHeight;
-
-      let displayed = false;
-
-      try {
-        const res = await fetch('/dialogflow', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({message: msg})
-        });
-        const data = await res.json();
-        console.log("Respuesta backend:", data);
-
-        // 2) Mostrar texto de respuesta si existe
-        if (data.reply && data.reply.trim() !== "") {
-          const botMsg = document.createElement("div");
-          botMsg.className = "message bot";
-          botMsg.innerText = data.reply;
-          chat.appendChild(botMsg);
-          displayed = true;
-        }
-
-        // 3) Mostrar chips (opciones) filtrando vacíos
-        const payload = data.payload?.fields?.richContent;
-        if (payload) {
-          payload.listValue.values.forEach(row => {
-            const options = row.listValue.values
-              .map(item => {
-                const f = item.structValue.fields;
-                if (f.type.stringValue === 'chips' && f.options) {
-                  return f.options.listValue.values
-                    .map(o => o.structValue.fields.text.stringValue);
-                }
-                return [];
-              })
-              .flat()
-              .filter(text => text && text.trim() !== "");
-
-            if (options.length) {
-              const container = document.createElement("div");
-              container.className = "chip-container";
-              options.forEach(text => {
-                const btn = document.createElement("button");
-                btn.className = "chip-btn";
-                btn.innerText = text;
-                btn.onclick = () => {
-                  inputEl.value = text;
-                  sendMessage();
-                };
-                container.appendChild(btn);
-              });
-              chat.appendChild(container);
-              displayed = true;
-            }
-          });
-        }
-
-        // 4) Fallback si nada se mostró
-        if (!displayed) {
-          const fallback = document.createElement("div");
-          fallback.className = "message bot";
-          fallback.innerText = "Lo siento, no entendí eso.";
-          chat.appendChild(fallback);
-        }
-
-        chat.scrollTop = chat.scrollHeight;
-      } catch (err) {
-        console.error("Error al contactar backend:", err);
-        const errMsg = document.createElement("div");
-        errMsg.className = "message bot";
-        errMsg.innerText = "⚠️ Error de conexión al servidor.";
-        chat.appendChild(errMsg);
-        chat.scrollTop = chat.scrollHeight;
-      }
-    }
-  </script>
 </body>
 </html>
-
