@@ -161,18 +161,22 @@
     })
     .then(res => res.json())
     .then(data => {
+      console.log("🟢 Respuesta recibida del backend:", data);
       if (data.reply && data.reply.trim() !== "") {
         const botMsg = document.createElement("div");
         botMsg.className = "message bot";
         botMsg.innerText = data.reply;
         chat.appendChild(botMsg);
         chat.scrollTop = chat.scrollHeight;
+      } else {
+        console.log("⚠️ El bot respondió vacío.");
       }
     })
     .catch(err => {
-      console.error('Error al enviar al backend:', err);
+      console.error('❌ Error al enviar al backend:', err);
     });
   }
 </script>
+
 </body>
 </html>
